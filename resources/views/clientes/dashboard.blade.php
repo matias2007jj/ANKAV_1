@@ -57,6 +57,7 @@
                    class="border rounded px-3 py-2 text-sm flex-1 min-w-[200px]">
 
             <button type="submit" class="bg-gray-800 text-white text-sm px-4 py-2 rounded">Buscar</button>
+            <button type="submit" class="bg-gray-800 text-white text-sm px-4 py-2 rounded">Eliminar</button>
         </form>
 
         {{-- Tabla de extintores --}}
