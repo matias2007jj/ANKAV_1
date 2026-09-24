@@ -1,18 +1,15 @@
-// login.js - Mostrar u ocultar la contraseña al hacer clic
-
+// Mostrar / ocultar contraseña
 document.addEventListener('DOMContentLoaded', function () {
-    const toggle = document.getElementById('toggle-password');
-    const passwordInput = document.getElementById('password');
+    var input = document.getElementById('password');
+    var btn = document.getElementById('togglePassword');
 
-    if (toggle && passwordInput) {
-        toggle.addEventListener('click', function () {
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggle.textContent = 'Ocultar contraseña';
-            } else {
-                passwordInput.type = 'password';
-                toggle.textContent = 'Mostrar contraseña';
-            }
-        });
-    }
+    if (!input || !btn) return;
+
+    btn.addEventListener('click', function () {
+        var mostrar = input.type === 'password';
+
+        input.type = mostrar ? 'text' : 'password';
+        btn.classList.toggle('is-on', mostrar);
+        btn.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
 });
