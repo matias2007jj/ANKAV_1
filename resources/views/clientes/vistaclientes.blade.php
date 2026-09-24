@@ -9,7 +9,7 @@
         {{-- Encabezado --}}
         <div class="cliente-header">
             <div>
-                <span class="badge-panel">Panel de Cliente</span>
+                <span class="badge-panel">Panel Administrativo</span>
                 <h1>{{ $cliente->razon_social }}</h1>
                 <p>
                     Código: <strong>{{ $cliente->codigo_cliente }}</strong> · 

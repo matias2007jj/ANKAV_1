@@ -1,29 +1,34 @@
 /* ==========================================
-   ESTILO CLARO - PANEL DE CLIENTE
+   ESTILO CLARO - PANEL DE CLIENTE (CON ANIMACIONES)
    ========================================== */
 
-/* Fondo general de la página y estructura de Laravel en modo claro */
+/* Fondo general de la página y estructura en modo claro */
 html, body, div[class*="min-h-screen"] {
     background-color: #f4f4f5 !important;
     color: #111111 !important;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Barra superior de navegación en modo claro */
-nav, header {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid #e4e4e7 !important;
-    color: #111111 !important;
+/* Animación sutil de entrada para todo el contenedor principal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* Contenedor principal */
 .cliente-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 24px 16px;
+    animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* Encabezado Principal */
+/* Encabezado Principal con transición suave */
 .cliente-header {
     background-color: #ffffff;
     color: #111111;
@@ -36,6 +41,12 @@ nav, header {
     border: 1px solid #e4e4e7;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     margin-bottom: 24px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cliente-header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .badge-panel {
@@ -61,6 +72,7 @@ nav, header {
     color: #71717a;
 }
 
+/* Botón Agregar con efecto hover y escala fluida */
 .btn-agregar {
     background: linear-gradient(135deg, #ea580c, #dc2626);
     color: #ffffff;
@@ -70,10 +82,14 @@ nav, header {
     font-weight: 700;
     font-size: 14px;
     white-space: nowrap;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
 }
 
 .btn-agregar:hover {
-    opacity: 0.9;
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
 }
 
 /* Alertas de sesión */
@@ -86,9 +102,10 @@ nav, header {
     border-radius: 6px;
     margin-bottom: 24px;
     font-size: 14px;
+    animation: fadeIn 0.5s ease-out;
 }
 
-/* Tarjetas Resumen */
+/* Tarjetas Resumen con efecto flotante al pasar el mouse */
 .resumen-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -103,6 +120,12 @@ nav, header {
     border: 1px solid #e4e4e7;
     box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     border-left: 5px solid #d4d4d8;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-resumen:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .card-resumen p {
@@ -129,7 +152,7 @@ nav, header {
 .text-orange { color: #c2410c; }
 .text-red { color: #b91c1c; }
 
-/* Filtros */
+/* Filtros con transición de enfoque en inputs */
 .filtros-form {
     background-color: #ffffff;
     padding: 16px;
@@ -152,6 +175,13 @@ nav, header {
     border-radius: 6px;
     font-size: 14px;
     outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filtros-form select:focus, 
+.filtros-form input:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
 
 .filtros-form input {
@@ -168,13 +198,15 @@ nav, header {
     font-weight: 700;
     cursor: pointer;
     font-size: 14px;
+    transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
 .btn-buscar:hover {
     background-color: #27272a;
+    transform: translateY(-1px);
 }
 
-/* Tabla */
+/* Tabla con transiciones suaves en las filas */
 .table-container {
     background-color: #ffffff;
     border-radius: 8px;
@@ -192,7 +224,7 @@ table {
 }
 
 thead {
-    background-color: #dc2626; /* Mantiene la cabecera en rojo institucional */
+    background-color: #dc2626;
     color: #ffffff;
     text-transform: uppercase;
     font-size: 11px;
@@ -205,10 +237,11 @@ th, td {
 
 tbody tr {
     border-bottom: 1px solid #f1f1f5;
+    transition: background-color 0.2s ease;
 }
 
 tbody tr:hover {
-    background-color: #fff7ed; /* Destacado suave en tono naranja al pasar el cursor */
+    background-color: #fff7ed; /* Transición suave de color al pasar el cursor */
 }
 
 .text-center {
@@ -217,12 +250,18 @@ tbody tr:hover {
     padding: 40px !important;
 }
 
-/* Badges de Estado */
+/* Badges de Estado con pequeño efecto visual */
 .badge {
     padding: 5px 10px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.badge:hover {
+    transform: scale(1.05);
 }
 
 .badge-vigente { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
@@ -237,6 +276,7 @@ tbody tr:hover {
     font-size: 12px;
     margin-right: 8px;
     font-weight: 600;
+    transition: color 0.15s ease;
 }
 
 .certificados-links a:hover {
