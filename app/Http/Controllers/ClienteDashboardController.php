@@ -10,6 +10,13 @@ class ClienteDashboardController extends Controller
 {
     public function show(string $codigo, Request $request)
     {
+        $user = $request->user();
+
+        // Un cliente solo puede ver su propia empresa, sin importar qué código ponga en la URL
+        if ($user->role === 'cliente' && $user->codigo_cliente !== $codigo) {
+            abort(403, 'No tienes permiso para ver este cliente.');
+        }
+
         $cliente = Cliente::where('codigo_cliente', $codigo)->firstOrFail();
 
         $query = $cliente->equipos()->with('sede');
@@ -57,45 +64,6 @@ class ClienteDashboardController extends Controller
 
         $sedes = $cliente->sedes;
 
-        return view('clientes.dashboard', compact('cliente', 'equipos', 'resumen', 'sedes'));
-    }
-
-    public function vistaPrueba()
-    {
-        // Datos simulados idénticos para probar la vista con diseño
-        $cliente = (object) [
-            'razon_social' => 'Inversiones y Seguridad SAC',
-            'codigo_cliente' => 'CLI-001',
-            'ruc' => '20601234567',
-            'provincia' => 'Lima'
-        ];
-
-        $resumen = [
-            'total' => 15,
-            'vigentes' => 10,
-            'por_vencer' => 3,
-            'vencidos' => 2
-        ];
-
-        $sedes = collect([
-            (object) ['codigo_sede' => 1, 'nombre_sede' => 'Sede Principal - Lima']
-        ]);
-
-        $equipos = collect([
-            (object) [
-                'numero_serie' => 'EXT-9854',
-                'sede' => (object) ['nombre_sede' => 'Sede Principal - Lima'],
-                'tipo_extintor' => 'PQS (ABC)',
-                'capacidad_carga' => '6 Kg',
-                'marca' => 'Befesa',
-                'vencimiento_ph' => now()->addMonths(5),
-                'estado_visual' => 'vigente',
-                'ruta_cert_operatividad' => null,
-                'ruta_informe_tecnico' => null,
-                'ruta_cert_ph' => null
-            ]
-        ]);
-
-        return view('clientes.vistaclientes', compact('cliente', 'resumen', 'sedes', 'equipos'));
+        return view('clientes.vistaclientes', compact('cliente', 'equipos', 'resumen', 'sedes'));
     }
 }

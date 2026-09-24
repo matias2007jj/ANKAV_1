@@ -16,7 +16,6 @@ class Equipo extends Model
         'marca',
         'anio_fabricacion',
         'proximo_mantenimiento',
-        'proximo_mantenimiento_real',
         'vencimiento_ph',
         'estado',
         'fecha_ultimo_servicio',
@@ -27,10 +26,32 @@ class Equipo extends Model
     ];
 
     protected $casts = [
-        'proximo_mantenimiento_real' => 'date',
         'vencimiento_ph' => 'date',
         'fecha_ultimo_servicio' => 'date',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Al crear un extintor, calculamos automáticamente sus fechas
+        // si es que no vinieron ya definidas manualmente.
+        static::creating(function ($equipo) {
+            $fechaBase = now();
+
+            // Vencimiento del PH: cada 5 años desde la fecha de creación
+            if (!$equipo->vencimiento_ph) {
+                $equipo->vencimiento_ph = $fechaBase->copy()->addYears(5)->toDateString();
+            }
+
+            // Próximo mantenimiento: mismo mes, un año después (ej. "ABR-2027")
+            if (!$equipo->proximo_mantenimiento) {
+                $equipo->proximo_mantenimiento = strtoupper(
+                    $fechaBase->copy()->addYear()->locale('es')->isoFormat('MMM-YYYY')
+                );
+            }
+        });
+    }
 
     public function cliente()
     {

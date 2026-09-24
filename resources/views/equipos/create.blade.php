@@ -32,9 +32,12 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de extintor *</label>
-                    <input type="text" name="tipo_extintor" value="{{ old('tipo_extintor') }}" required
-                           placeholder="Ej. PQS, CO2, Agua"
-                           class="w-full border rounded px-3 py-2 text-sm">
+                    <select name="tipo_extintor" required class="w-full border rounded px-3 py-2 text-sm">
+                        <option value="">-- Selecciona --</option>
+                        @foreach ($tipos as $tipo)
+                            <option value="{{ $tipo }}" @selected(old('tipo_extintor') == $tipo)>{{ $tipo }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
@@ -52,15 +55,22 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Capacidad de carga</label>
-                    <input type="text" name="capacidad_carga" value="{{ old('capacidad_carga') }}"
-                           placeholder="Ej. 06 KG"
-                           class="w-full border rounded px-3 py-2 text-sm">
+                    <select name="capacidad_carga" class="w-full border rounded px-3 py-2 text-sm">
+                        <option value="">-- Selecciona --</option>
+                        @foreach ($capacidades as $capacidad)
+                            <option value="{{ $capacidad }}" @selected(old('capacidad_carga') == $capacidad)>{{ $capacidad }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Marca</label>
-                    <input type="text" name="marca" value="{{ old('marca') }}"
-                           class="w-full border rounded px-3 py-2 text-sm">
+                    <select name="marca" class="w-full border rounded px-3 py-2 text-sm">
+                        <option value="">-- Selecciona --</option>
+                        @foreach ($marcas as $marca)
+                            <option value="{{ $marca }}" @selected(old('marca') == $marca)>{{ $marca }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
@@ -79,20 +89,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Vencimiento PH</label>
-                    <input type="date" name="vencimiento_ph" value="{{ old('vencimiento_ph') }}"
-                           class="w-full border rounded px-3 py-2 text-sm">
-                </div>
-
-                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha último servicio</label>
                     <input type="date" name="fecha_ultimo_servicio" value="{{ old('fecha_ultimo_servicio') }}"
-                           class="w-full border rounded px-3 py-2 text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Próximo mantenimiento (real)</label>
-                    <input type="date" name="proximo_mantenimiento_real" value="{{ old('proximo_mantenimiento_real') }}"
                            class="w-full border rounded px-3 py-2 text-sm">
                 </div>
 
@@ -102,6 +100,10 @@
                            class="w-full border rounded px-3 py-2 text-sm">
                 </div>
             </div>
+
+            <p class="text-xs text-gray-500 -mt-2">
+                El vencimiento del PH (5 años) y el próximo mantenimiento se calculan automáticamente al guardar.
+            </p>
 
             <hr class="my-4">
 
