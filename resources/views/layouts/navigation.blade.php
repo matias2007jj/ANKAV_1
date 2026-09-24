@@ -8,6 +8,7 @@
                 <div class="shrink-0 flex items-center">
                     <a href="">
                         <img src="{{ asset('img/logo.png') }}" alt="Anka Fire" style="height: 133px; width: auto; object-fit: contain;">
+
                     </a>
                 </div>
 
