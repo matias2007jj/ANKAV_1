@@ -3,12 +3,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <!-- Logo ANKA FIRE -->
-                <!-- Logo ANKA FIRE -->
+                <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="">
+                    <a href="{{ route('principal') }}">
                         <img src="{{ asset('img/logo.png') }}" alt="Anka Fire" style="height: 133px; width: auto; object-fit: contain;">
-
                     </a>
                 </div>
 
