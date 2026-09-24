@@ -1,47 +1,66 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesión - Anka Fire</title>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+</head>
+<body>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+    <div class="login-container">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="login-logo">
+            <h1><span class="anka">ANKA</span> <span class="fire">FIRE</span></h1>
+            <p>Equipos contra incendios</p>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <div class="login-card">
+            <h2>Iniciar sesión</h2>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
+            @if (session('status'))
+                <p class="form-error">{{ session('status') }}</p>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus>
+                    @error('email')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input id="password" type="password" name="password" required>
+                    <span id="toggle-password" class="toggle-password">Mostrar contraseña</span>
+                    @error('password')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-options">
+                    <label>
+                        <input type="checkbox" name="remember"> Recordarme
+                    </label>
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+                    @endif
+                </div>
+
+                <button type="submit" class="btn-login">Ingresar</button>
+            </form>
         </div>
-    </form>
-</x-guest-layout>
+
+        <p class="login-footer">&copy; {{ date('Y') }} Anka Fire — Equipos contra incendios</p>
+    </div>
+
+    <script src="{{ asset('js/login.js') }}"></script>
+
+</body>
+
+</html>
+
