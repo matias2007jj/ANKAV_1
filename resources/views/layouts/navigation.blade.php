@@ -6,7 +6,7 @@
                 <!-- Logo ANKA FIRE -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('img/logo-anka.png') }}" alt="Anka Fire Logo" class="block h-9 w-auto object-contain">
+                        <img src="{{ asset('img/logo.png') }}" alt="Anka Fire Logo" class="block h-9 w-auto object-contain">
                     </a>
                 </div>
 
