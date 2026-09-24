@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteDashboardController;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -16,18 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-Route::get('/clientes/{codigo}/dashboard', [ClienteDashboardController::class, 'show'])
-    ->name('clientes.dashboard');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/clientes/{codigo}/dashboard', [ClienteDashboardController::class, 'show'])
-        ->name('clientes.dashboard');
-});
-
-
-// Agrega este bloque dentro de tu routes/web.php existente
-Route::middleware(['auth'])->group(function () {
+    // Rutas organizadas con controladores (como las demás)
     Route::get('/clientes/{codigo}/dashboard', [ClienteDashboardController::class, 'show'])
         ->name('clientes.dashboard');
 
@@ -36,5 +27,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/clientes/{codigo}/equipos', [EquipoController::class, 'store'])
         ->name('equipos.store');
+
+    // Nueva ruta para tu vista de cliente usando el controlador
+    Route::get('/vistacliente', [ClienteDashboardController::class, 'vistaPrueba'])
+        ->name('clientes.vistaprueba');
 });
+
 require __DIR__.'/auth.php';
