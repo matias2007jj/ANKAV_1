@@ -84,8 +84,7 @@
                     </thead>
                     <tbody>
                         @forelse($clientes as $cliente)
-                        <!-- Fila clicable que redirige automáticamente al dashboard del cliente -->
-                            
+                        <tr>
                             <!-- Columna de Acciones (Evita que el clic propague al formulario) -->
                             <td onclick="event.stopPropagation();">
                                 <div class="anka-action-buttons">
@@ -102,7 +101,12 @@
                             </td>
 
                             <td>{{ $cliente->id }}</td>
-                            <td>{{ $cliente->codigo_cliente }}</td>
+                            <!-- Código: enlace al dashboard del cliente correspondiente -->
+                            <td>
+                                <a href="{{ url('clientes/'.$cliente->codigo_cliente.'/dashboard') }}" style="font-weight: 700; color: var(--text-main); text-decoration: none;">
+                                    {{ $cliente->codigo_cliente }}
+                                </a>
+                            </td>
                             <td>{{ $cliente->razon_social }}</td>
                             <td>{{ $cliente->nombre_comercial }}</td>
                             <td>{{ $cliente->ruc }}</td>

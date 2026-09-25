@@ -28,7 +28,7 @@ class PrincipalController extends Controller
             });
         }
 
-        $clientes = $query->orderBy('razon_social')->get();
+        $clientes = $query->orderBy('id')->get();
 
         $clientes->each(function ($cliente) {
             if (strtoupper($cliente->estado) === 'VIGENTE') {
