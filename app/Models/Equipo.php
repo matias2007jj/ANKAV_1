@@ -17,6 +17,7 @@ class Equipo extends Model
         'anio_fabricacion',
         'proximo_mantenimiento',
         'vencimiento_ph',
+        'fecha_prueba_hidrostatica',
         'estado',
         'fecha_ultimo_servicio',
         'numero_certificado',

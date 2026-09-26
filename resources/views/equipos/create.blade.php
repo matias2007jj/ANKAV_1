@@ -74,9 +74,10 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Año de fabricación</label>
-                    <input type="number" name="anio_fabricacion" value="{{ old('anio_fabricacion') }}"
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Mes y año de fabricación</label>
+                    <input type="month" name="fecha_fabricacion" value="{{ old('fecha_fabricacion') }}"
                            class="w-full border rounded px-3 py-2 text-sm">
+                    <p class="text-xs text-gray-500 mt-1">El próximo mantenimiento (mismo mes, +1 año) y el vencimiento de PH (+5 años) se calculan a partir de esta fecha.</p>
                 </div>
 
                 <div>
@@ -95,6 +96,12 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Mes y año de prueba hidrostática</label>
+                    <input type="month" name="mes_prueba_hidrostatica" value="{{ old('mes_prueba_hidrostatica') }}"
+                           class="w-full border rounded px-3 py-2 text-sm">
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">N° de certificado</label>
                     <input type="text" name="numero_certificado" value="{{ old('numero_certificado') }}"
                            class="w-full border rounded px-3 py-2 text-sm">
@@ -102,7 +109,7 @@
             </div>
 
             <p class="text-xs text-gray-500 -mt-2">
-                El vencimiento del PH (5 años) y el próximo mantenimiento se calculan automáticamente al guardar.
+                Si no indicas mes/año de fabricación, el vencimiento de PH y el próximo mantenimiento se calculan desde hoy.
             </p>
 
             <hr class="my-4">

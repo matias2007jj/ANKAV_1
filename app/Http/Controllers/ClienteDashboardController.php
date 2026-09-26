@@ -5,39 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Equipo;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Str;
-use App\Exports\EquiposExport;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ClienteDashboardController extends Controller
 {
-    public function show(Request $request, ?string $codigo = null)
-    {
-        return $this->procesarDashboard($request, $codigo);
-    }
-
-    public function vistaPrueba(Request $request, ?string $codigo = null)
-    {
-        return $this->procesarDashboard($request, $codigo);
-    }
-
-    private function procesarDashboard(Request $request, ?string $codigo)
+    public function show(string $codigo, Request $request)
     {
         $user = $request->user();
 
-        // Si no pasan el código por URL pero el usuario logueado tiene un código asignado, úsalo
-        if (!$codigo && $user && isset($user->codigo_cliente) && $user->codigo_cliente) {
-            $codigo = $user->codigo_cliente;
-        }
-
-        if (!$codigo) {
-            abort(404, 'No se especificó un código de cliente.');
-        }
-
         // Un cliente solo puede ver su propia empresa, sin importar qué código ponga en la URL
-        if ($user && $user->role === 'cliente' && $user->codigo_cliente !== $codigo) {
+        if ($user->role === 'cliente' && $user->codigo_cliente !== $codigo) {
             abort(403, 'No tienes permiso para ver este cliente.');
         }
 
@@ -59,13 +35,10 @@ class ClienteDashboardController extends Controller
             });
         }
 
-        $equipos = $query->orderBy('vencimiento_ph')->get();
-
         $hoy = Carbon::today();
         $limiteProximo = $hoy->copy()->addDays(60);
 
-        // Clasificamos cada equipo para pintarlo en la vista
-        $equipos->each(function ($equipo) use ($hoy, $limiteProximo) {
+        $calcularEstado = function ($equipo) use ($hoy, $limiteProximo) {
             $vencimiento = $equipo->vencimiento_ph ? Carbon::parse($equipo->vencimiento_ph) : null;
 
             if (!$vencimiento) {
@@ -77,39 +50,26 @@ class ClienteDashboardController extends Controller
             } else {
                 $equipo->estado_visual = 'vigente';
             }
-        });
+        };
+
+        // El resumen (tarjetas) se calcula sobre TODOS los resultados filtrados,
+        // no solo los de la página actual.
+        $todos = (clone $query)->get();
+        $todos->each($calcularEstado);
 
         $resumen = [
-            'total' => $equipos->count(),
-            'vigentes' => $equipos->where('estado_visual', 'vigente')->count(),
-            'por_vencer' => $equipos->where('estado_visual', 'por_vencer')->count(),
-            'vencidos' => $equipos->where('estado_visual', 'vencido')->count(),
+            'total' => $todos->count(),
+            'vigentes' => $todos->where('estado_visual', 'vigente')->count(),
+            'por_vencer' => $todos->where('estado_visual', 'por_vencer')->count(),
+            'vencidos' => $todos->where('estado_visual', 'vencido')->count(),
         ];
+
+        // La tabla sí se pagina: 15 registros por página
+        $equipos = $query->orderBy('vencimiento_ph')->paginate(15)->withQueryString();
+        $equipos->getCollection()->each($calcularEstado);
 
         $sedes = $cliente->sedes;
 
         return view('clientes.vistaclientes', compact('cliente', 'equipos', 'resumen', 'sedes'));
-    }
-
-      public function exportarExcel(string $codigo)
-{
-    $cliente = Cliente::where('codigo_cliente', $codigo)->firstOrFail();
-    $nombreCliente = $cliente->razon_social ?? $cliente->nombre_comercial ?? $codigo;
-    $nombreArchivo = "Reporte de extintores de {$nombreCliente}.xlsx";
-
-    return Excel::download(new EquiposExport($codigo), $nombreArchivo);
-}
-
-    public function exportarPdf(string $codigo)
-    {
-          $cliente = Cliente::where('codigo_cliente', $codigo)->firstOrFail();
-    $equipos = Equipo::where('codigo_cliente', $codigo)->orderBy('numero_interno')->get();
-
-    $pdf = Pdf::loadView('clientes.pdf-equipos', compact('cliente', 'equipos'));
-
-    $nombreCliente = $cliente->razon_social ?? $cliente->nombre_comercial ?? $codigo;
-    $nombreArchivo = "Reporte de extintores de {$nombreCliente}.pdf";
-
-    return $pdf->download($nombreArchivo);
     }
 }
