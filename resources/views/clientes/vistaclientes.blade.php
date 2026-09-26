@@ -3,8 +3,6 @@
     <link rel="stylesheet" href="{{ asset('css/cliente.css') }}">
 
     <div class="cliente-container">
-        {{-- Todo tu contenido HTML va aquí abajo... --}}
-    <div class="cliente-container">
 
         {{-- Encabezado --}}
         <div class="cliente-header">
@@ -17,9 +15,23 @@
                     {{ $cliente->provincia }}
                 </p>
             </div>
-            <a href="{{ route('equipos.create', $cliente->codigo_cliente) }}" class="btn-agregar">
-                + Agregar extintor
-            </a>
+            
+            <div class="header-acciones" style="display: flex; gap: 10px; align-items: center;">
+                {{-- Botón Exportar Excel (Solo Icono) --}}
+                <a href="{{ route('clientes.exportar.excel', $cliente->codigo_cliente) }}" class="btn-icono" title="Exportar a Excel">
+                    <img src="{{ asset('img/icono-excel.png') }}" alt="Excel" style="width: 28px; height: 28px;">
+                </a>
+
+                {{-- Botón Exportar PDF (Solo Icono) --}}
+                <a href="{{ route('clientes.exportar.pdf', $cliente->codigo_cliente) }}" class="btn-icono" title="Exportar a PDF">
+                    <img src="{{ asset('img/icono-pdf.png') }}" alt="PDF" style="width: 28px; height: 28px;">
+                </a>
+
+                {{-- Botón Agregar extintor --}}
+                <a href="{{ route('equipos.create', $cliente->codigo_cliente) }}" class="btn-agregar">
+                    + Agregar extintor
+                </a>
+            </div>
         </div>
 
         @if (session('mensaje'))

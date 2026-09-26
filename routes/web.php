@@ -47,5 +47,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/clientes/{codigo}/equipos', [EquipoController::class, 'store'])
         ->name('equipos.store');
+
+    Route::get('/clientes/{codigo}/exportar-excel', [ClienteController::class, 'exportarExcel'])
+    ->name('clientes.exportar.excel');
+    
+    Route::get('/clientes/{codigo}/exportar-pdf', [ClienteDashboardController::class, 'exportarPdf'])
+    ->name('clientes.exportar.pdf');
 });
 require __DIR__.'/auth.php';

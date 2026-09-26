@@ -5,15 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Exports\EquiposExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClienteDashboardController extends Controller
 {
-    public function show(string $codigo, Request $request)
+    public function show(Request $request, ?string $codigo = null)
+    {
+        return $this->procesarDashboard($request, $codigo);
+    }
+
+    public function vistaPrueba(Request $request, ?string $codigo = null)
+    {
+        return $this->procesarDashboard($request, $codigo);
+    }
+
+    private function procesarDashboard(Request $request, ?string $codigo)
     {
         $user = $request->user();
 
+        // Si no pasan el código por URL pero el usuario logueado tiene un código asignado, úsalo
+        if (!$codigo && $user && isset($user->codigo_cliente) && $user->codigo_cliente) {
+            $codigo = $user->codigo_cliente;
+        }
+
+        if (!$codigo) {
+            abort(404, 'No se especificó un código de cliente.');
+        }
+
         // Un cliente solo puede ver su propia empresa, sin importar qué código ponga en la URL
-        if ($user->role === 'cliente' && $user->codigo_cliente !== $codigo) {
+        if ($user && $user->role === 'cliente' && $user->codigo_cliente !== $codigo) {
             abort(403, 'No tienes permiso para ver este cliente.');
         }
 
@@ -66,4 +87,9 @@ class ClienteDashboardController extends Controller
 
         return view('clientes.vistaclientes', compact('cliente', 'equipos', 'resumen', 'sedes'));
     }
+
+    public function exportarExcel(string $codigo)
+{
+    return Excel::download(new EquiposExport($codigo), "equipos_{$codigo}.xlsx");
+}
 }
