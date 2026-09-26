@@ -111,11 +111,11 @@ html, body, div[class*="min-h-screen"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
-    padding: 6px;
+    width: 44px;
+    height: 44px;
+    padding: 8px;
     border: 1px solid #e4e4e7;
-    border-radius: 8px;
+    border-radius: 10px;
     background-color: #ffffff;
     color: #52525b;
     cursor: pointer;
@@ -124,11 +124,52 @@ html, body, div[class*="min-h-screen"] {
 }
 
 .btn-icono:hover {
-    background-color: #fff1f2;
-    border-color: #fecaca;
-    color: #dc2626;
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 14px rgba(220, 38, 38, 0.18);
+}
+
+.btn-icono img {
+    width: 22px;
+    height: 22px;
+}
+
+/* Excel: verde, a juego con su marca */
+.btn-icono-excel {
+    border-color: #bbf7d0;
+    background-color: #f0fdf4;
+}
+
+.btn-icono-excel:hover {
+    background-color: #16a34a;
+    border-color: #16a34a;
+    box-shadow: 0 6px 14px rgba(22, 163, 74, 0.35);
+}
+
+.btn-icono-excel:hover img {
+    filter: brightness(0) invert(1);
+}
+
+/* PDF: rojo, a juego con su marca */
+.btn-icono-pdf {
+    border-color: #fecaca;
+    background-color: #fef2f2;
+}
+
+.btn-icono-pdf:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    box-shadow: 0 6px 14px rgba(220, 38, 38, 0.35);
+}
+
+.btn-icono-pdf:hover img {
+    filter: brightness(0) invert(1);
+}
+
+/* Barra de acciones de exportación, justo arriba de la tabla */
+.tabla-acciones {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 24px;
 }
 
 .btn-icono:active {
@@ -375,17 +416,45 @@ html, body, div[class*="min-h-screen"] {
     background-color: #ffffff;
     border-radius: 14px;
     border: 1px solid #e4e4e7;
-    overflow-x: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 640px;
     box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
     animation: fadeInUp 0.5s ease-out 0.4s both;
 }
 
+/* Barra de scroll más discreta y a juego con el panel */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f4f4f5;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: #dc2626;
+    border-radius: 10px;
+    border: 2px solid #f4f4f5;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background-color: #b91c1c;
+}
+
 table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     text-align: left;
-    font-size: 13px;
+    font-size: 12.5px;
     color: #18181b;
+    box-sizing: border-box;
+}
+
+table, th, td {
+    box-sizing: border-box;
 }
 
 thead {
@@ -395,11 +464,27 @@ thead {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.8px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 
 th, td {
-    padding: 15px 18px;
+    padding: 12px 10px;
+    overflow-wrap: break-word;
 }
+
+/* Anchos proporcionales: N° Serie, Sede, Tipo, Capacidad, Marca, Vencimiento, Estado, Certificados, Acciones */
+/* Suman 97% en vez de 100% para dejarle sitio a la barra de scroll vertical y que no empuje una horizontal */
+th:nth-child(1), td:nth-child(1) { width: 11%; word-break: break-word; }
+th:nth-child(2), td:nth-child(2) { width: 9%; word-break: break-word; }
+th:nth-child(3), td:nth-child(3) { width: 7%; }
+th:nth-child(4), td:nth-child(4) { width: 8%; }
+th:nth-child(5), td:nth-child(5) { width: 9%; }
+th:nth-child(6), td:nth-child(6) { width: 11%; }
+th:nth-child(7), td:nth-child(7) { width: 8%; }
+th:nth-child(8), td:nth-child(8) { width: 20%; }
+th:nth-child(9), td:nth-child(9) { width: 14%; }
 
 tbody tr {
     border-bottom: 1px solid #f1f1f5;
@@ -437,14 +522,20 @@ tbody tr:hover {
 .badge-sin-dato { background-color: #f4f4f5; color: #52525b; border: 1px solid #e4e4e7; }
 
 /* Enlaces de certificados con animación de subrayado */
+.certificados-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+}
+
 .certificados-links a {
     color: #ea580c;
     text-decoration: none;
-    font-size: 12px;
-    margin-right: 10px;
+    font-size: 11.5px;
     font-weight: 700;
     position: relative;
     transition: color 0.2s ease;
+    white-space: nowrap;
 }
 
 .certificados-links a::after {
@@ -467,4 +558,41 @@ tbody tr:hover {
 .certificados-links a:hover::after {
     transform: scaleX(1);
     transform-origin: left;
+}
+
+/* Botones de Editar / Eliminar en la tabla de extintores */
+.acciones-fila {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-fila {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-fila-editar {
+    color: #18181b;
+    background-color: #f4f4f5;
+}
+
+.btn-fila-editar:hover {
+    background-color: #18181b;
+    color: #ffffff;
+}
+
+.btn-fila-eliminar {
+    color: #dc2626;
+    background-color: #fee2e2;
+}
+
+.btn-fila-eliminar:hover {
+    background-color: #dc2626;
+    color: #ffffff;
 }

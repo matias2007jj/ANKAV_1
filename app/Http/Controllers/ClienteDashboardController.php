@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Models\Equipo;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Str;
 use App\Exports\EquiposExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -88,8 +91,25 @@ class ClienteDashboardController extends Controller
         return view('clientes.vistaclientes', compact('cliente', 'equipos', 'resumen', 'sedes'));
     }
 
-    public function exportarExcel(string $codigo)
+      public function exportarExcel(string $codigo)
 {
-    return Excel::download(new EquiposExport($codigo), "equipos_{$codigo}.xlsx");
+    $cliente = Cliente::where('codigo_cliente', $codigo)->firstOrFail();
+    $nombreCliente = $cliente->razon_social ?? $cliente->nombre_comercial ?? $codigo;
+    $nombreArchivo = "Reporte de extintores de {$nombreCliente}.xlsx";
+
+    return Excel::download(new EquiposExport($codigo), $nombreArchivo);
 }
+
+    public function exportarPdf(string $codigo)
+    {
+          $cliente = Cliente::where('codigo_cliente', $codigo)->firstOrFail();
+    $equipos = Equipo::where('codigo_cliente', $codigo)->orderBy('numero_interno')->get();
+
+    $pdf = Pdf::loadView('clientes.pdf-equipos', compact('cliente', 'equipos'));
+
+    $nombreCliente = $cliente->razon_social ?? $cliente->nombre_comercial ?? $codigo;
+    $nombreArchivo = "Reporte de extintores de {$nombreCliente}.pdf";
+
+    return $pdf->download($nombreArchivo);
+    }
 }

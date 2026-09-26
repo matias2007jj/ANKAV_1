@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/clientes/{codigo}/equipos', [EquipoController::class, 'store'])
         ->name('equipos.store');
 
-    Route::get('/clientes/{codigo}/exportar-excel', [ClienteController::class, 'exportarExcel'])
+    Route::get('/clientes/{codigo}/exportar-excel', [ClienteDashboardController::class, 'exportarExcel'])
     ->name('clientes.exportar.excel');
     
     Route::get('/clientes/{codigo}/exportar-pdf', [ClienteDashboardController::class, 'exportarPdf'])
