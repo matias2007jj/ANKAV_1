@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ClienteDashboardController;
 use App\Http\Controllers\EquipoController;
@@ -31,8 +32,6 @@ Route::middleware('auth')->group(function () {
     // Ruta para tu vista de cliente usando el controlador
     Route::get('/vistacliente', [ClienteDashboardController::class, 'vistaPrueba'])
         ->name('clientes.vistaprueba');
-    
-        
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -48,10 +47,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/clientes/{codigo}/equipos', [EquipoController::class, 'store'])
         ->name('equipos.store');
 
-    Route::get('/clientes/{codigo}/exportar-excel', [ClienteController::class, 'exportarExcel'])
+    Route::get('/clientes/{codigo}/exportar-excel', [ClienteDashboardController::class, 'exportarExcel'])
     ->name('clientes.exportar.excel');
-    
-    Route::get('/clientes/{codigo}/exportar-pdf', [ClienteDashboardController::class, 'exportarPdf'])
+
+Route::get('/clientes/{codigo}/exportar-pdf', [ClienteDashboardController::class, 'exportarPdf'])
     ->name('clientes.exportar.pdf');
 });
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

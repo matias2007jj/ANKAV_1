@@ -106,34 +106,79 @@ html, body, div[class*="min-h-screen"] {
     transform: translateY(-1px) scale(0.98);
 }
 
-/* Botón icono, adaptado al sistema de diseño (colores, radios y transiciones del panel) */
+/* Botón icono (Excel / PDF), adaptado al sistema de diseño del panel */
 .btn-icono {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
-    padding: 6px;
+    width: 58px;
+    height: 58px;
+    padding: 10px;
     border: 1px solid #e4e4e7;
-    border-radius: 8px;
+    border-radius: 12px;
     background-color: #ffffff;
     color: #52525b;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
 }
 
 .btn-icono:hover {
-    background-color: #fff1f2;
-    border-color: #fecaca;
-    color: #dc2626;
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 14px rgba(220, 38, 38, 0.18);
 }
 
 .btn-icono:active {
     transform: translateY(0) scale(0.96);
     box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
+}
+
+.btn-icono img {
+    width: 28px;
+    height: 28px;
+}
+
+/* Excel: verde, a juego con su marca */
+.btn-icono-excel {
+    border-color: #bbf7d0;
+    background-color: #f0fdf4;
+}
+
+.btn-icono-excel:hover {
+    background-color: #16a34a;
+    border-color: #16a34a;
+    box-shadow: 0 6px 14px rgba(22, 163, 74, 0.35);
+}
+
+.btn-icono-excel:hover img {
+    filter: brightness(0) invert(1);
+}
+
+/* PDF: rojo, a juego con su marca */
+.btn-icono-pdf {
+    border-color: #fecaca;
+    background-color: #fef2f2;
+}
+
+.btn-icono-pdf:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    box-shadow: 0 6px 14px rgba(220, 38, 38, 0.35);
+}
+
+.btn-icono-pdf:hover img {
+    filter: brightness(0) invert(1);
+}
+
+/* Barra de acciones de exportación, justo arriba de la tabla */
+.tabla-acciones {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
 }
 
 /* Alertas */
@@ -321,7 +366,7 @@ html, body, div[class*="min-h-screen"] {
     border-left-color: #b91c1c;
 }
 
-.filtros-form select, 
+.filtros-form select,
 .filtros-form input {
     background-color: #ffffff;
     color: #18181b;
@@ -335,7 +380,7 @@ html, body, div[class*="min-h-screen"] {
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.filtros-form select:focus, 
+.filtros-form select:focus,
 .filtros-form input:focus {
     background-color: #ffffff;
     border-color: #dc2626;
@@ -375,17 +420,23 @@ html, body, div[class*="min-h-screen"] {
     background-color: #ffffff;
     border-radius: 14px;
     border: 1px solid #e4e4e7;
-    overflow-x: auto;
+    overflow: visible;
     box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
     animation: fadeInUp 0.5s ease-out 0.4s both;
 }
 
 table {
     width: 100%;
+    min-width: 900px;
     border-collapse: collapse;
     text-align: left;
-    font-size: 13px;
+    font-size: 12.5px;
     color: #18181b;
+    box-sizing: border-box;
+}
+
+table, th, td {
+    box-sizing: border-box;
 }
 
 thead {
@@ -395,10 +446,21 @@ thead {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.8px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 
 th, td {
-    padding: 15px 18px;
+    padding: 12px 10px;
+    white-space: nowrap;
+}
+
+/* Columnas de texto que sí pueden ser largas (nombre, sede) sí pueden partirse en dos líneas */
+td:nth-child(1),
+td:nth-child(3) {
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 tbody tr {
@@ -437,14 +499,20 @@ tbody tr:hover {
 .badge-sin-dato { background-color: #f4f4f5; color: #52525b; border: 1px solid #e4e4e7; }
 
 /* Enlaces de certificados con animación de subrayado */
+.certificados-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+}
+
 .certificados-links a {
     color: #ea580c;
     text-decoration: none;
-    font-size: 12px;
-    margin-right: 10px;
+    font-size: 11.5px;
     font-weight: 700;
     position: relative;
     transition: color 0.2s ease;
+    white-space: nowrap;
 }
 
 .certificados-links a::after {
@@ -467,4 +535,888 @@ tbody tr:hover {
 .certificados-links a:hover::after {
     transform: scaleX(1);
     transform-origin: left;
+}
+
+/* Botones de Editar / Eliminar en la tabla de extintores */
+.acciones-fila {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-fila {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-fila-editar {
+    color: #18181b;
+    background-color: #f4f4f5;
+}
+
+.btn-fila-editar:hover {
+    background-color: #18181b;
+    color: #ffffff;
+}
+
+.btn-fila-eliminar {
+    color: #dc2626;
+    background-color: #fee2e2;
+}
+
+.btn-fila-eliminar:hover {
+    background-color: #dc2626;
+    color: #ffffff;
+}
+
+/* ==========================================
+   PAGINACIÓN (vista de Laravel: $equipos->links())
+   ========================================== */
+
+.paginacion-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+}
+
+.paginacion-wrap nav {
+    width: auto;
+}
+
+.paginacion-wrap nav > div {
+    justify-content: center !important;
+}
+
+.paginacion-wrap p {
+    color: #71717a;
+    font-size: 12px;
+    text-align: center;
+}
+
+.paginacion-wrap p span {
+    color: #18181b;
+    font-weight: 700;
+}
+
+/* La píldora blanca que agrupa flechas y números de página */
+.paginacion-wrap [class*="inline-flex"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #ffffff;
+    padding: 6px;
+    border-radius: 14px;
+    border: 1px solid #e4e4e7;
+    box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.08);
+}
+
+.paginacion-wrap [class*="inline-flex"] > a,
+.paginacion-wrap [class*="inline-flex"] > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 10px !important;
+    background-color: transparent !important;
+    color: #52525b !important;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.paginacion-wrap [class*="inline-flex"] > a:hover {
+    background-color: #f4f4f5 !important;
+    color: #18181b !important;
+}
+
+/* Página activa: círculo en degradado rojo/naranja con el número en blanco.
+   Se aplica al span[aria-current="page"] y se fuerza sobre TODO lo que tenga
+   adentro (Laravel suele anidar un span extra con su propio fondo/color) */
+.paginacion-wrap span[aria-current="page"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px !important;
+    margin: 0 !important;
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, #ea580c, #dc2626) !important;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.paginacion-wrap span[aria-current="page"] * {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Flechas «anterior» / «siguiente» quando están deshabilitadas */
+.paginacion-wrap [class*="inline-flex"] > span[aria-disabled="true"] {
+    color: #d4d4d8 !important;
+    cursor: not-allowed;
+}html, body, div[class*="min-h-screen"] {
+    background-color: #f4f4f5 !important;
+    color: #18181b !important;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Animaciones fluidas de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+
+.cliente-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Encabezado con sombra más marcada */
+.cliente-header {
+    background-color: #ffffff;
+    color: #18181b;
+    padding: 24px;
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 4px solid #dc2626;
+    border: 1px solid #e4e4e7;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fadeInUp 0.5s ease-out 0.05s both;
+}
+
+.cliente-header:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+    border-color: #d4d4d8;
+}
+
+.badge-panel {
+    background-color: #dc2626;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    transition: transform 0.2s ease;
+}
+
+.badge-panel:hover {
+    transform: scale(1.05);
+}
+
+.cliente-header h1 {
+    margin: 8px 0 4px 0;
+    font-size: 24px;
+    font-weight: 900;
+    color: #09090b;
+}
+
+.cliente-header p {
+    margin: 0;
+    font-size: 13px;
+    color: #71717a;
+}
+
+/* Botón con efectos de luz y desplazamiento fluido */
+.btn-agregar {
+    background: linear-gradient(135deg, #ea580c, #dc2626);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-agregar:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.45);
+    filter: brightness(1.05);
+}
+
+.btn-agregar:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* Botón icono (Excel / PDF), adaptado al sistema de diseño del panel */
+.btn-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    padding: 10px;
+    border: 1px solid #e4e4e7;
+    border-radius: 12px;
+    background-color: #ffffff;
+    color: #52525b;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+}
+
+.btn-icono:hover {
+    transform: translateY(-2px) scale(1.05);
+}
+
+.btn-icono:active {
+    transform: translateY(0) scale(0.96);
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
+}
+
+.btn-icono img {
+    width: 28px;
+    height: 28px;
+}
+
+/* Excel: verde, a juego con su marca */
+.btn-icono-excel {
+    border-color: #bbf7d0;
+    background-color: #f0fdf4;
+}
+
+.btn-icono-excel:hover {
+    background-color: #16a34a;
+    border-color: #16a34a;
+    box-shadow: 0 6px 14px rgba(22, 163, 74, 0.35);
+}
+
+.btn-icono-excel:hover img {
+    filter: brightness(0) invert(1);
+}
+
+/* PDF: rojo, a juego con su marca */
+.btn-icono-pdf {
+    border-color: #fecaca;
+    background-color: #fef2f2;
+}
+
+.btn-icono-pdf:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    box-shadow: 0 6px 14px rgba(220, 38, 38, 0.35);
+}
+
+.btn-icono-pdf:hover img {
+    filter: brightness(0) invert(1);
+}
+
+/* Barra de acciones de exportación, justo arriba de la tabla */
+.tabla-acciones {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+/* Alertas */
+.alert-mensaje {
+    background-color: #fff7ed;
+    border-left: 5px solid #f97316;
+    border: 1px solid #fed7aa;
+    color: #9a3412;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08);
+    animation: fadeInUp 0.4s ease-out 0.1s both;
+}
+
+/* ==========================================
+   TARJETAS DE RESUMEN (SOMBRAS MÁS NOTORIAS)
+   ========================================== */
+
+.resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.card-resumen {
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #e4e4e7;
+    border-left-width: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fadeInUp 0.5s ease-out both;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+.card-resumen:nth-child(1) { animation-delay: 0.15s; }
+.card-resumen:nth-child(2) { animation-delay: 0.2s; }
+.card-resumen:nth-child(3) { animation-delay: 0.25s; }
+.card-resumen:nth-child(4) { animation-delay: 0.3s; }
+
+.card-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.card-resumen p {
+    margin: 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    transition: color 0.3s ease;
+}
+
+.card-resumen h3 {
+    margin: 10px 0 0 0;
+    font-size: 36px;
+    font-weight: 900;
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card-resumen:hover .card-icon {
+    transform: scale(1.15) rotate(8deg);
+    animation: pulseGlow 1.2s infinite ease-in-out;
+}
+
+/* ==========================================
+   ESTILOS Y HOVERS ESPECÍFICOS POR TARJETA
+   ========================================== */
+
+.card-resumen.border-black { border-left-color: #09090b; }
+.card-resumen.border-black p { color: #52525b; }
+.card-resumen.border-black h3 { color: #09090b; }
+.card-resumen.border-black .card-icon { background: #f4f4f5; color: #09090b; }
+
+.card-resumen.border-black:hover {
+    background: linear-gradient(135deg, #18181b 0%, #09090b 100%) !important;
+    border-color: #09090b !important;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px -5px rgba(9, 9, 11, 0.35);
+}
+.card-resumen.border-black:hover p { color: #ffffff !important; }
+.card-resumen.border-black:hover h3 { color: #ffffff !important; }
+.card-resumen.border-black:hover .card-icon { background: rgba(255, 255, 255, 0.15) !important; color: #ffffff !important; }
+
+.card-resumen.border-green { border-left-color: #16a34a; }
+.card-resumen.border-green p { color: #15803d; }
+.card-resumen.border-green h3 { color: #16a34a; }
+.card-resumen.border-green .card-icon { background: #dcfce7; color: #16a34a; }
+
+.card-resumen.border-green:hover {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+    border-color: #16a34a !important;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px -5px rgba(22, 163, 74, 0.4);
+}
+.card-resumen.border-green:hover p { color: #ffffff !important; }
+.card-resumen.border-green:hover h3 { color: #ffffff !important; }
+.card-resumen.border-green:hover .card-icon { background: rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; }
+
+.card-resumen.border-orange { border-left-color: #f97316; }
+.card-resumen.border-orange p { color: #c2410c; }
+.card-resumen.border-orange h3 { color: #ea580c; }
+.card-resumen.border-orange .card-icon { background: #ffedd5; color: #f97316; }
+
+.card-resumen.border-orange:hover {
+    background: linear-gradient(135deg, #f97316 0%, #c2410c 100%) !important;
+    border-color: #f97316 !important;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px -5px rgba(249, 115, 22, 0.4);
+}
+.card-resumen.border-orange:hover p { color: #ffffff !important; }
+.card-resumen.border-orange:hover h3 { color: #ffffff !important; }
+.card-resumen.border-orange:hover .card-icon { background: rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; }
+
+.card-resumen.border-red { border-left-color: #dc2626; }
+.card-resumen.border-red p { color: #b91c1c; }
+.card-resumen.border-red h3 { color: #dc2626; }
+.card-resumen.border-red .card-icon { background: #fee2e2; color: #dc2626; }
+
+.card-resumen.border-red:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    border-color: #dc2626 !important;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px -5px rgba(220, 38, 38, 0.45);
+}
+.card-resumen.border-red:hover p { color: #ffffff !important; }
+.card-resumen.border-red:hover h3 { color: #ffffff !important; }
+.card-resumen.border-red:hover .card-icon { background: rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; }
+
+.text-green { color: #16a34a !important; }
+.text-orange { color: #ea580c !important; }
+.text-red { color: #dc2626 !important; }
+
+/* ==========================================
+   SECCIÓN DE FILTROS Y BÚSQUEDA
+   ========================================== */
+
+.filtros-form {
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    padding: 20px 22px;
+    border-radius: 14px;
+    border: 1px solid #e4e4e7;
+    border-left: 5px solid #dc2626;
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    flex-wrap: wrap;
+    align-items: center;
+    animation: fadeInUp 0.5s ease-out 0.35s both;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filtros-form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px -4px rgba(220, 38, 38, 0.12);
+    border-color: #d4d4d8;
+    border-left-color: #b91c1c;
+}
+
+.filtros-form select,
+.filtros-form input {
+    background-color: #ffffff;
+    color: #18181b;
+    padding: 11px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filtros-form select:focus,
+.filtros-form input:focus {
+    background-color: #ffffff;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+}
+
+.filtros-form input {
+    flex: 1;
+    min-width: 220px;
+}
+
+/* Dropdown personalizado de sedes (reemplaza al <select> nativo) */
+.custom-select {
+    position: relative;
+    min-width: 200px;
+}
+
+.custom-select-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background-color: #ffffff;
+    color: #18181b;
+    padding: 11px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-select-trigger:hover {
+    border-color: #dc2626;
+}
+
+.custom-select.is-open .custom-select-trigger {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.custom-select-trigger svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: #71717a;
+    transition: transform 0.2s ease;
+}
+
+.custom-select.is-open .custom-select-trigger svg {
+    transform: rotate(180deg);
+}
+
+.custom-select-options {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 10px;
+    box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.15);
+    z-index: 20;
+    padding: 6px;
+}
+
+.custom-select-option {
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #27272a;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.custom-select-option:hover {
+    background-color: #fff1f2;
+    color: #dc2626;
+}
+
+.custom-select-option.is-selected {
+    background-color: #dc2626;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.btn-buscar {
+    background: linear-gradient(135deg, #18181b, #09090b);
+    color: #ffffff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-buscar:hover {
+    background: linear-gradient(135deg, #27272a, #18181b);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   TABLA DE DATOS Y ELEMENTOS FINALES
+   ========================================== */
+
+.table-container {
+    background-color: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e4e4e7;
+    overflow: visible;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    animation: fadeInUp 0.5s ease-out 0.4s both;
+}
+
+table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 12.5px;
+    color: #18181b;
+    box-sizing: border-box;
+}
+
+table, th, td {
+    box-sizing: border-box;
+}
+
+thead {
+    background-color: #dc2626;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+th, td {
+    padding: 12px 10px;
+    white-space: nowrap;
+}
+
+/* Columnas de texto que sí pueden ser largas (nombre, sede) sí pueden partirse en dos líneas */
+td:nth-child(1),
+td:nth-child(3) {
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+tbody tr {
+    border-bottom: 1px solid #f1f1f5;
+    transition: all 0.2s ease-in-out;
+}
+
+tbody tr:hover {
+    background-color: #fff1f2;
+    transform: scale(1.002);
+}
+
+.text-center {
+    text-align: center;
+    color: #71717a;
+    padding: 40px !important;
+}
+
+/* Badges con efecto rebote al pasar el mouse */
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.badge:hover {
+    transform: scale(1.1);
+}
+
+.badge-vigente { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.badge-por-vencer { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+.badge-vencido { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.badge-sin-dato { background-color: #f4f4f5; color: #52525b; border: 1px solid #e4e4e7; }
+
+/* Enlaces de certificados con animación de subrayado */
+.certificados-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+}
+
+.certificados-links a {
+    color: #ea580c;
+    text-decoration: none;
+    font-size: 11.5px;
+    font-weight: 700;
+    position: relative;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.certificados-links a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #dc2626;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.25s ease-in-out;
+}
+
+.certificados-links a:hover {
+    color: #dc2626;
+}
+
+.certificados-links a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Botones de Editar / Eliminar en la tabla de extintores */
+.acciones-fila {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-fila {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-fila-editar {
+    color: #18181b;
+    background-color: #f4f4f5;
+}
+
+.btn-fila-editar:hover {
+    background-color: #18181b;
+    color: #ffffff;
+}
+
+.btn-fila-eliminar {
+    color: #dc2626;
+    background-color: #fee2e2;
+}
+
+.btn-fila-eliminar:hover {
+    background-color: #dc2626;
+    color: #ffffff;
+}
+
+/* ==========================================
+   PAGINACIÓN (vista de Laravel: $equipos->links())
+   ========================================== */
+
+.paginacion-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+}
+
+.paginacion-wrap nav {
+    width: auto;
+}
+
+.paginacion-wrap nav > div {
+    justify-content: center !important;
+}
+
+.paginacion-wrap p {
+    color: #71717a;
+    font-size: 12px;
+    text-align: center;
+}
+
+.paginacion-wrap p span {
+    color: #18181b;
+    font-weight: 700;
+}
+
+/* La píldora blanca que agrupa flechas y números de página */
+.paginacion-wrap [class*="inline-flex"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #ffffff;
+    padding: 6px;
+    border-radius: 14px;
+    border: 1px solid #e4e4e7;
+    box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.08);
+}
+
+.paginacion-wrap [class*="inline-flex"] > a,
+.paginacion-wrap [class*="inline-flex"] > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 10px !important;
+    background-color: transparent !important;
+    color: #52525b !important;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.paginacion-wrap [class*="inline-flex"] > a:hover {
+    background-color: #f4f4f5 !important;
+    color: #18181b !important;
+}
+
+/* Página activa: círculo en degradado rojo/naranja con el número en blanco.
+   Se aplica al span[aria-current="page"] y se fuerza sobre TODO lo que tenga
+   adentro (Laravel suele anidar un span extra con su propio fondo/color) */
+.paginacion-wrap span[aria-current="page"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px !important;
+    margin: 0 !important;
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, #ea580c, #dc2626) !important;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.paginacion-wrap span[aria-current="page"] * {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Flechas «anterior» / «siguiente» quando están deshabilitadas */
+.paginacion-wrap [class*="inline-flex"] > span[aria-disabled="true"] {
+    color: #d4d4d8 !important;
+    cursor: not-allowed;
 }
