@@ -1,5 +1,4 @@
 <x-app-layout>
-    {{-- Colocamos el enlace CSS directamente aquí para que la plantilla lo renderice --}}
     <link rel="stylesheet" href="{{ asset('css/cliente.css') }}">
 
     <div class="cliente-container">
@@ -17,7 +16,6 @@
             </div>
 
             <div class="header-acciones" style="display: flex; gap: 10px; align-items: center;">
-                {{-- Botón Agregar extintor --}}
                 <a href="{{ route('equipos.create', $cliente->codigo_cliente) }}" class="btn-agregar">
                     + Agregar extintor
                 </a>
@@ -66,7 +64,7 @@
             <button type="submit" class="btn-buscar">Filtrar</button>
         </form>
 
-        {{-- Botones de exportar, agrupados para que queden uno al lado del otro --}}
+        {{-- Botones de exportar --}}
         <div class="tabla-acciones">
             <a href="{{ route('clientes.exportar.excel', $cliente->codigo_cliente) }}" class="btn-icono btn-icono-excel" title="Exportar a Excel">
                 <img src="{{ asset('img/icono-excel.png') }}" alt="Excel">
@@ -100,7 +98,6 @@
                 </thead>
                 <tbody>
                     @php
-                    // Convierte una fecha (Carbon/date) al formato "MES-AÑO" en mayúsculas, ej. "JUL-2027"
                     $mesAnio = fn($fecha) => $fecha ? strtoupper($fecha->locale('es')->isoFormat('MMM-YYYY')) : 'S/N';
                     @endphp
                     @forelse ($equipos as $equipo)
@@ -154,23 +151,26 @@
                         </td>
                         <td>
                             <div class="acciones-fila">
-                                <button type="button" class="btn-fila btn-fila-editar" data-id="{{ $equipo->id }}">Editar</button>
+                                {{-- Botón de Editar convertido a Enlace --}}
+                                <a href="{{ route('equipos.edit', [$cliente->codigo_cliente, $equipo->id]) }}" class="btn-fila btn-fila-editar" style="text-decoration: none; display: inline-block;">
+                                    Editar
+                                </a>
                                 <button type="button" class="btn-fila btn-fila-eliminar" data-id="{{ $equipo->id }}">Eliminar</button>
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="13" class="text-center">No se encontraron extintores con estos filtros.</td>
+                        <td colspan="14" class="text-center">No se encontraron extintores con estos filtros.</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        {{-- Barra de navegación (paginación), 15 registros por página --}}
+        {{-- Paginación --}}
         <div class="paginacion-wrap">
-            {{ $equipos->links() }}
+            {{ $equipos->withQueryString()->links() }}
         </div>
 
     </div>

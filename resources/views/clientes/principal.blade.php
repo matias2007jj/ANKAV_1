@@ -27,7 +27,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </div>
-                
+
                 <div class="anka-dropdown-content">
                     <a href="{{ route('profile.edit') }}">Perfil</a>
                     <!-- Authentication (Logout) -->
@@ -45,14 +45,14 @@
     <!-- Contenido Principal con la Tabla de Clientes -->
     <main class="anka-main" style="flex-direction: column; align-items: center; justify-content: flex-start;">
         <div class="anka-table-container">
-            
+
             <!-- Cabecera de la sección con Título, Contador y Botón AGREGAR CLIENTES -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
                 <div>
                     <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Listado de Clientes Registrados</h2>
                     <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">Total: {{ $resumen['total'] }} registros</span>
                 </div>
-                
+
                 <!-- Botón solicitado: AGREGAR CLIENTES -->
                 <a href="#" class="anka-btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
@@ -61,13 +61,12 @@
                     Agregar Clientes
                 </a>
             </div>
-            
+
             <!-- Contenedor con scroll interno exclusivo para la tabla -->
             <div class="anka-table-scroll-wrapper">
                 <table class="anka-table">
                     <thead>
                         <tr>
-                            <th>Acciones</th>
                             <th>ID</th>
                             <th>Código</th>
                             <th>Razón Social</th>
@@ -80,26 +79,12 @@
                             <th>Correo</th>
                             <th>Teléfono</th>
                             <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($clientes as $cliente)
                         <tr>
-                            <!-- Columna de Acciones (Evita que el clic propague al formulario) -->
-                            <td onclick="event.stopPropagation();">
-                                <div class="anka-action-buttons">
-                                    <!-- Botón Editar -->
-                                    <a href="#" class="btn-editar">Editar Cliente</a>
-
-                                    <!-- Botón Eliminar -->
-                                    <form action="#" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este cliente?');" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-eliminar">Eliminar Cliente</button>
-                                    </form>
-                                </div>
-                            </td>
-
                             <td>{{ $cliente->id }}</td>
                             <!-- Código: enlace al dashboard del cliente correspondiente -->
                             <td>
@@ -117,6 +102,21 @@
                             <td>{{ $cliente->correo }}</td>
                             <td>{{ $cliente->telefono }}</td>
                             <td><span class="badge-estado">{{ $cliente->estado }}</span></td>
+
+                            <!-- Columna de Acciones (Evita que el clic propague al formulario) -->
+                            <td onclick="event.stopPropagation();">
+                                <div class="anka-action-buttons">
+                                    <!-- Botón Editar -->
+                                    <a href="#" class="btn-editar">Editar Cliente</a>
+
+                                    <!-- Botón Eliminar -->
+                                    <form action="#" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este cliente?');" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-eliminar">Eliminar Cliente</button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                         @empty
                         <tr>
@@ -125,6 +125,11 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- Barra de navegación (paginación), 15 registros por página --}}
+            <div style="margin-top: 16px; display: flex; justify-content: center;">
+                {{ $clientes->links() }}
             </div>
 
         </div>

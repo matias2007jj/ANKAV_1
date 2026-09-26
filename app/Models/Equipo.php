@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\Carbon;
 
 class Equipo extends Model
 {
@@ -26,29 +28,53 @@ class Equipo extends Model
         'ruta_cert_ph',
     ];
 
+    // Mantenemos como 'date' solo los campos de fecha estricta
     protected $casts = [
         'vencimiento_ph' => 'date',
         'fecha_ultimo_servicio' => 'date',
     ];
 
+    /**
+     * Accesor para fecha_prueba_hidrostatica.
+     * Devuelve el mes abreviado y año en mayúsculas (ej: "SEP.-2026")
+     * o "S/N" si está vacía o es inválida.
+     */
+    protected function fechaPruebaHidrostatica(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if (empty($value) || $value === 'S/N') {
+                    return 'S/N';
+                }
+
+                try {
+                    return strtoupper(
+                        Carbon::parse($value)->locale('es')->isoFormat('MMM-YYYY')
+                    );
+                } catch (\Exception $e) {
+                    return 'S/N';
+                }
+            }
+        );
+    }
+
     protected static function boot()
     {
         parent::boot();
 
-        // Al crear un extintor, calculamos automáticamente sus fechas
-        // si es que no vinieron ya definidas manualmente.
-        static::creating(function ($equipo) {
+        // 'saving' se ejecuta tanto al CREAR como al ACTUALIZAR
+        static::saving(function ($equipo) {
             $fechaBase = now();
 
-            // Vencimiento del PH: cada 5 años desde la fecha de creación
+            // Vencimiento del PH: cada 5 años
             if (!$equipo->vencimiento_ph) {
                 $equipo->vencimiento_ph = $fechaBase->copy()->addYears(5)->toDateString();
             }
 
-            // Próximo mantenimiento: mismo mes, un año después (ej. "ABR-2027")
+            // Próximo mantenimiento: mismo mes, un año después
             if (!$equipo->proximo_mantenimiento) {
                 $equipo->proximo_mantenimiento = strtoupper(
-                    $fechaBase->copy()->addYear()->locale('es')->isoFormat('MMM-YYYY')
+                    $fechaBase->copy()->addYear()->locale('es')->isoFormat('MMM.-YYYY')
                 );
             }
         });

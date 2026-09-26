@@ -9,18 +9,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
+
 class EquipoController extends Controller
 {
-    public function create(string $codigo)
+    public function create($codigo_cliente)
     {
-        $cliente = Cliente::where('codigo_cliente', $codigo)->firstOrFail();
+        $cliente = Cliente::where('codigo_cliente', $codigo_cliente)->firstOrFail();
         $sedes = $cliente->sedes;
 
-        $tipos = DB::table('tipos_extintor')->orderBy('nombre')->pluck('nombre');
-        $marcas = DB::table('marcas')->orderBy('nombre')->pluck('nombre');
-        $capacidades = DB::table('capacidades')->orderBy('valor')->pluck('valor');
+        // Consultamos directo desde tus tablas reales
+        $tipos = DB::table('tipos_extintor')->pluck('nombre');
+        $capacidades = DB::table('capacidades')->pluck('valor');
+        $marcas = DB::table('marcas')->pluck('nombre');
 
-        return view('equipos.create', compact('cliente', 'sedes', 'tipos', 'marcas', 'capacidades'));
+        return view('equipos.create', compact('cliente', 'sedes', 'tipos', 'capacidades', 'marcas'));
     }
 
     public function store(Request $request, string $codigo)
@@ -65,11 +67,13 @@ class EquipoController extends Controller
 
         $datos['codigo_cliente'] = $cliente->codigo_cliente;
 
-        foreach ([
-            'cert_operatividad' => 'ruta_cert_operatividad',
-            'informe_tecnico' => 'ruta_informe_tecnico',
-            'cert_ph' => 'ruta_cert_ph',
-        ] as $campoArchivo => $campoRuta) {
+        foreach (
+            [
+                'cert_operatividad' => 'ruta_cert_operatividad',
+                'informe_tecnico' => 'ruta_informe_tecnico',
+                'cert_ph' => 'ruta_cert_ph',
+            ] as $campoArchivo => $campoRuta
+        ) {
             if ($request->hasFile($campoArchivo)) {
                 $datos[$campoRuta] = $request->file($campoArchivo)
                     ->store('certificados', 'public');
@@ -84,4 +88,63 @@ class EquipoController extends Controller
             ->route('clientes.dashboard', $cliente->codigo_cliente)
             ->with('mensaje', 'Extintor agregado correctamente.');
     }
+    // Cargar la vista con los datos del extintor
+    public function edit($codigo_cliente, $id)
+    {
+        $cliente = Cliente::where('codigo_cliente', $codigo_cliente)->firstOrFail();
+        $equipo = Equipo::findOrFail($id);
+        $sedes = $cliente->sedes;
+
+        // Consultamos directo desde tus tablas reales
+        $tipos = DB::table('tipos_extintor')->pluck('nombre');
+        $capacidades = DB::table('capacidades')->pluck('valor');
+        $marcas = DB::table('marcas')->pluck('nombre');
+
+        return view('equipos.create', compact('cliente', 'equipo', 'sedes', 'tipos', 'capacidades', 'marcas'));
+    }
+
+    // Guardar la actualización en la base de datos
+    public function update(Request $request, $codigo_cliente, $id)
+    {
+        $equipo = Equipo::findOrFail($id);
+
+        // 1. Extraer los datos del formulario excepto los inputs de archivo
+        $data = $request->except(['cert_operatividad', 'informe_tecnico', 'cert_ph']);
+
+        // 2. Procesar Certificado de Operatividad
+        if ($request->hasFile('cert_operatividad')) {
+            if ($equipo->ruta_cert_operatividad) {
+                Storage::disk('public')->delete($equipo->ruta_cert_operatividad);
+            }
+            $data['ruta_cert_operatividad'] = $request->file('cert_operatividad')->store('certificados', 'public');
+        }
+
+        // 3. Procesar Informe Técnico
+        if ($request->hasFile('informe_tecnico')) {
+            if ($equipo->ruta_informe_tecnico) {
+                Storage::disk('public')->delete($equipo->ruta_informe_tecnico);
+            }
+            $data['ruta_informe_tecnico'] = $request->file('informe_tecnico')->store('certificados', 'public');
+        }
+
+        // 4. Procesar Certificado de PH
+        if ($request->hasFile('cert_ph')) {
+            if ($equipo->ruta_cert_ph) {
+                Storage::disk('public')->delete($equipo->ruta_cert_ph);
+            }
+            $data['ruta_cert_ph'] = $request->file('cert_ph')->store('certificados', 'public');
+        }
+
+        // 5. Mapeo de fecha si envías "fecha_fabricacion" o "mes_prueba_hidrostatica" desde la vista
+        if ($request->filled('mes_prueba_hidrostatica')) {
+            $data['fecha_prueba_hidrostatica'] = $request->mes_prueba_hidrostatica . '-01';
+        }
+
+        // 6. Actualizar modelo
+        $equipo->update($data);
+
+        return redirect()->route('clientes.dashboard', $codigo_cliente)
+            ->with('mensaje', 'Extintor y documentos actualizados con éxito.');
+    }
+    
 }

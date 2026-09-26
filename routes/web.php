@@ -14,43 +14,29 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
+    // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Rutas organizadas con controladores
-    Route::get('/clientes/{codigo}/dashboard', [ClienteDashboardController::class, 'show'])
-        ->name('clientes.dashboard');
+    // Clientes
+    Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
+    Route::get('/clientes/{codigo}/dashboard', [ClienteDashboardController::class, 'show'])->name('clientes.dashboard');
 
-    Route::get('/clientes/{codigo}/equipos/nuevo', [EquipoController::class, 'create'])
-        ->name('equipos.create');
+    // Equipos
+    Route::get('/clientes/{codigo}/equipos/nuevo', [EquipoController::class, 'create'])->name('equipos.create');
+    Route::post('/clientes/{codigo}/equipos', [EquipoController::class, 'store'])->name('equipos.store');
+    Route::get('/clientes/{codigo}/equipos/{id}/editar', [EquipoController::class, 'edit'])->name('equipos.edit');
+    Route::put('/clientes/{codigo}/equipos/{id}', [EquipoController::class, 'update'])->name('equipos.update');
+    
+    // --- RUTA PARA DAR DE BAJA (ELIMINAR) ---
+    Route::delete('/clientes/{codigo}/equipos/{id}', [EquipoController::class, 'destroy'])->name('equipos.destroy');
 
-    Route::post('/clientes/{codigo}/equipos', [EquipoController::class, 'store'])
-        ->name('equipos.store');
-
-    // Ruta para tu vista de cliente usando el controlador
-    Route::get('/vistacliente', [ClienteDashboardController::class, 'vistaPrueba'])
-        ->name('clientes.vistaprueba');
+    // Exportaciones y Pruebas
+    Route::get('/clientes/{codigo}/exportar-excel', [ClienteDashboardController::class, 'exportarExcel'])->name('clientes.exportar.excel');
+    Route::get('/clientes/{codigo}/exportar-pdf', [ClienteDashboardController::class, 'exportarPdf'])->name('clientes.exportar.pdf');
+    Route::get('/vistacliente', [ClienteDashboardController::class, 'vistaPrueba'])->name('clientes.vistaprueba');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/clientes', [ClienteController::class, 'index'])
-        ->name('clientes.index');
-
-    Route::get('/clientes/{codigo}/dashboard', [ClienteDashboardController::class, 'show'])
-        ->name('clientes.dashboard');
-
-    Route::get('/clientes/{codigo}/equipos/nuevo', [EquipoController::class, 'create'])
-        ->name('equipos.create');
-
-    Route::post('/clientes/{codigo}/equipos', [EquipoController::class, 'store'])
-        ->name('equipos.store');
-
-    Route::get('/clientes/{codigo}/exportar-excel', [ClienteDashboardController::class, 'exportarExcel'])
-    ->name('clientes.exportar.excel');
-
-Route::get('/clientes/{codigo}/exportar-pdf', [ClienteDashboardController::class, 'exportarPdf'])
-    ->name('clientes.exportar.pdf');
-});
 require __DIR__ . '/auth.php';

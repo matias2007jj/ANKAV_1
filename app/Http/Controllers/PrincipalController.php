@@ -28,21 +28,28 @@ class PrincipalController extends Controller
             });
         }
 
-        $clientes = $query->orderBy('id')->get();
-
-        $clientes->each(function ($cliente) {
+        $calcularEstado = function ($cliente) {
             if (strtoupper($cliente->estado) === 'VIGENTE') {
                 $cliente->estado_visual = 'vigente';
             } else {
                 $cliente->estado_visual = 'suspendido';
             }
-        });
+        };
+
+        // El resumen (contador de total/vigentes/otros) se calcula sobre TODOS
+        // los resultados filtrados, no solo los de la página actual.
+        $todos = (clone $query)->get();
+        $todos->each($calcularEstado);
 
         $resumen = [
-            'total' => $clientes->count(),
-            'vigentes' => $clientes->where('estado_visual', 'vigente')->count(),
-            'otros' => $clientes->where('estado_visual', '!=', 'vigente')->count(),
+            'total' => $todos->count(),
+            'vigentes' => $todos->where('estado_visual', 'vigente')->count(),
+            'otros' => $todos->where('estado_visual', '!=', 'vigente')->count(),
         ];
+
+        // La tabla sí se pagina: 15 registros por página
+        $clientes = $query->orderBy('id')->paginate(15)->withQueryString();
+        $clientes->getCollection()->each($calcularEstado);
 
         $provincias = Cliente::select('provincia')->distinct()->pluck('provincia');
 
